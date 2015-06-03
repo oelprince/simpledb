@@ -22,6 +22,10 @@ public class Storage implements Serializable {
 		store.put(entity.getId(), entity);
 	}
 	
+	public Entity<?> getEntity(String key) {
+		return store.get(key);
+	}
+	
 	/**
 	 * 
 	 * @return

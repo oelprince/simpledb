@@ -1,12 +1,7 @@
 package simpledb;
 
-import static org.junit.Assert.*;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -16,57 +11,46 @@ public class DataBaseEngTest {
 
 	@Test
 	public void testAdd() {
-		
-	}
-	
-	@Test
-	public void testRemove() {
-		
-	}
-	
-	
-	@Test
-	public void testEntitySerialize() {
+		DataBaseEng databaseEng = new DataBaseEng();
 		Entity<Employee> entity = new Entity<Employee>();
 		Employee emp = new Employee();
 		
 		emp.setId("2323424523434234234");
 		emp.setFirstName("Magee");
 		emp.setLastName("Anderson");
-		
 		entity.setId("3423213123123123213");
 		entity.setObject(emp);
 		
-		//Storage storage = new Storage();
-		Storage store = null;
+		databaseEng.add(entity);
+		Entity<?> resultEntity =  databaseEng.getEntityById(entity.getId());
+		Employee employeeResult = (Employee) resultEntity.getObject();
+		assertNotNull("employeeResult not equal null " + employeeResult);
+		assertTrue("Magee".equals(employeeResult.getFirstName()));
+		assertTrue("Anderson".equals(employeeResult.getLastName()));
+	}
+	
+	@Test
+	public void testRemove() {
+		DataBaseEng databaseEng = new DataBaseEng();
+		Entity<Employee> entity = new Entity<Employee>();
+		Employee emp = new Employee();
 		
-		try {
-			FileInputStream fileIn = new FileInputStream("Storage.ser");
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			store = (Storage) in.readObject();
-			
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		emp.setId("2323424523434234234");
+		emp.setFirstName("Magee");
+		emp.setLastName("Anderson");
+		entity.setId("3423213123123123213");
+		entity.setObject(emp);
 		
-		store.add(entity);
+		databaseEng.add(entity);
+		Entity<?> resultEntity = databaseEng.getEntityById(entity.getId());
+		Employee employeeResult = (Employee) resultEntity.getObject();
+		assertNotNull("employeeResult not equal null " + employeeResult);
+		assertTrue("Magee".equals(employeeResult.getFirstName()));
+		assertTrue("Anderson".equals(employeeResult.getLastName()));
 		
-		try {
-			FileOutputStream fileOut = new FileOutputStream("Storage.ser");
-
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(store);
-			out.close();
-			
-		} catch(IOException ioe) {
-			ioe.printStackTrace();
-		}
+		databaseEng.remove(entity);
 		
-		assertTrue("size of database =",store.getSize() > 0);
-	 
+		assertTrue("databaseEng.getCount() == 0", databaseEng.getCount() == 0);
 	}
 
 }
